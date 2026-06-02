@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATM Banking System</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="atm-container">
+        <div class="atm-header">
+            <i class="fas fa-university fa-2x"></i>
+            <h1>🏦 ATM Banking System</h1>
+        </div>
+        
+        {% if atm_status %}
+        <div class="atm-status {% if atm_status == 'OPERATIONAL' %}online{% else %}offline{% endif %} {% if atm_cash_low %}low-cash{% endif %}">
+            <div>
+                <strong><i class="fas fa-map-marker-alt"></i> {{ atm_location }}</strong>
+                <span class="ml-3">Status: {{ atm_status }}</span>
+            </div>
+            {% if atm_cash_low %}
+            <div class="warning">
+                <i class="fas fa-exclamation-triangle"></i> Low Cash
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <div class="atm-body">
+            {% block content %}{% endblock %}
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px; color: #7f8c8d; font-size: 12px;">
+            <p>For assistance, call: 0800-12345 | © 2024 Bank ATM System</p>
+        </div>
+    </div>
+</body>
+</html>

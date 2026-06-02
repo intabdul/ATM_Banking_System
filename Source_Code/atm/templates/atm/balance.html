@@ -1,0 +1,60 @@
+{% extends 'atm/base.html' %}
+
+{% block content %}
+<div style="text-align: center; padding: 50px 0;">
+    <div style="font-size: 72px; color: #27ae60; margin-bottom: 30px;">
+        <i class="fas fa-wallet"></i>
+    </div>
+    
+    <h2>Account Balance Inquiry</h2>
+    
+    <div class="balance-display" style="max-width: 500px; margin: 30px auto;">
+        <h3>Current Balance</h3>
+        <div class="balance-amount">${{ account.current_balance }}</div>
+        <p>Account: {{ account.account_number }}</p>
+        <p>Last updated: {% now "Y-m-d H:i:s" %}</p>
+    </div>
+    
+    <div style="max-width: 500px; margin: 30px auto; background: #f8f9fa; padding: 20px; border-radius: 8px;">
+        <h4 style="margin-top: 0;"><i class="fas fa-chart-line"></i> Account Summary</h4>
+        <table style="width: 100%; text-align: left;">
+            <tr>
+                <td><strong>Account Holder:</strong></td>
+                <td>{{ account.customer.name }}</td>
+            </tr>
+            <tr>
+                <td><strong>Account Type:</strong></td>
+                <td>{{ account.get_account_type_display }}</td>
+            </tr>
+            <tr>
+                <td><strong>Daily Withdrawal Limit:</strong></td>
+                <td>${{ account.daily_withdrawal_limit }}</td>
+            </tr>
+            <tr>
+                <td><strong>Daily Transfer Limit:</strong></td>
+                <td>${{ account.daily_transfer_limit }}</td>
+            </tr>
+            <tr>
+                <td><strong>Account Status:</strong></td>
+                <td>
+                    <span style="color: {% if account.status == 'ACTIVE' %}#27ae60{% else %}#e74c3c{% endif %};">
+                        {{ account.get_status_display }}
+                    </span>
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    <div style="margin-top: 40px; display: flex; gap: 15px; justify-content: center;">
+        <a href="{% url 'dashboard' %}" class="atm-btn" style="width: 200px;">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+        <a href="{% url 'withdraw' %}" class="atm-btn withdraw" style="width: 200px;">
+            <i class="fas fa-money-bill-wave"></i> Withdraw Cash
+        </a>
+        <a href="{% url 'mini_statement' %}" class="atm-btn" style="width: 200px;">
+            <i class="fas fa-receipt"></i> View Statement
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends 'atm/base.html' %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+    <h2><i class="fas fa-receipt"></i> Mini Statement</h2>
+    
+    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+        <p><strong>Account:</strong> {{ account.account_number }}</p>
+        <p><strong>Statement Date:</strong> {% now "Y-m-d H:i:s" %}</p>
+        <p><strong>Current Balance:</strong> ${{ account.current_balance }}</p>
+    </div>
+    
+    <div style="text-align: right; margin-bottom: 20px;">
+        <a href="{% url 'print_receipt' %}" class="btn-primary" style="display: inline-flex; align-items: center; gap: 5px; text-decoration: none;">
+            <i class="fas fa-print"></i> Print Statement
+        </a>
+    </div>
+    
+    {% if transactions %}
+    <div style="overflow-x: auto;">
+        <table class="transaction-table">
+            <thead>
+                <tr>
+                    <th>Date & Time</th>
+                    <th>Transaction ID</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Balance</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for trans in transactions %}
+                <tr>
+                    <td>{{ trans.timestamp|date:"Y-m-d H:i" }}</td>
+                    <td style="font-family: monospace; font-size: 12px;">
+                        {{ trans.transaction_id|slice:":8" }}...
+                    </td>
+                    <td>{{ trans.get_transaction_type_display }}</td>
+                    <td>{{ trans.description|truncatechars:30 }}</td>
+                    <td>
+                        {% if trans.amount %}
+                            {% if trans.transaction_type == 'WITHDRAWAL' or trans.transaction_type == 'TRANSFER' %}
+                            -${{ trans.amount }}
+                            {% else %}
+                            ${{ trans.amount }}
+                            {% endif %}
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if forloop.first %}
+                        ${{ account.current_balance }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span style="color: {% if trans.status == 'SUCCESS' %}#27ae60{% elif trans.status == 'FAILED' %}#e74c3c{% else %}#f39c12{% endif %};">
+                            {{ trans.status }}
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 50px; background: #f8f9fa; border-radius: 8px;">
+        <i class="fas fa-inbox fa-3x" style="color: #bdc3c7; margin-bottom: 20px;"></i>
+        <h3>No Transactions Found</h3>
+        <p>No transactions have been made on this account yet.</p>
+    </div>
+    {% endif %}
+    
+    <div style="margin-top: 40px; display: flex; gap: 15px; justify-content: center;">
+        <a href="{% url 'dashboard' %}" class="atm-btn" style="width: 200px;">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+        <a href="{% url 'print_receipt' %}" class="atm-btn" style="width: 200px;">
+            <i class="fas fa-print"></i> Print Receipt
+        </a>
+    </div>
+</div>
+{% endblock %}

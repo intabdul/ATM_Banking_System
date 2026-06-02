@@ -1,0 +1,70 @@
+{% extends 'atm/base.html' %}
+
+{% block content %}
+<div class="login-screen">
+    <h2 style="text-align: center; margin-bottom: 30px;">
+        <i class="fas fa-credit-card"></i> ATM Login
+    </h2>
+    
+    {% if atm_status != 'OPERATIONAL' %}
+    <div class="alert alert-warning">
+        <i class="fas fa-exclamation-triangle"></i>
+        ATM is currently {{ atm_status }}. Some services may be unavailable.
+    </div>
+    {% endif %}
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="id_card_number">Card Number:</label>
+            <div style="position: relative;">
+                <i class="fas fa-credit-card" style="position: absolute; left: 10px; top: 12px; color: #666;"></i>
+                {{ form.card_number }}
+            </div>
+            {% if form.card_number.errors %}
+                <div class="error" style="color: #e74c3c; font-size: 14px;">
+                    {{ form.card_number.errors }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="id_pin">PIN:</label>
+            <div style="position: relative;">
+                <i class="fas fa-lock" style="position: absolute; left: 10px; top: 12px; color: #666;"></i>
+                {{ form.pin }}
+            </div>
+            {% if form.pin.errors %}
+                <div class="error" style="color: #e74c3c; font-size: 14px;">
+                    {{ form.pin.errors }}
+                </div>
+            {% endif %}
+            <small style="color: #7f8c8d; display: block; margin-top: 5px;">
+                <i class="fas fa-info-circle"></i> Enter 4-digit PIN
+            </small>
+        </div>
+        
+        <button type="submit" class="btn-primary" style="margin-top: 20px;">
+            <i class="fas fa-sign-in-alt"></i> Login
+        </button>
+    </form>
+    
+    <div style="margin-top: 30px; text-align: center; color: #7f8c8d;">
+        <p><i class="fas fa-shield-alt"></i> Your session will timeout in 10 minutes</p>
+        <p><i class="fas fa-exclamation-triangle"></i> Do not share your PIN with anyone</p>
+    </div>
+    
+    <div style="margin-top: 30px; padding: 15px; background: #f8f9fa; border-radius: 5px;">
+        <h4 style="margin-top: 0; color: #2c3e50;">Demo Credentials:</h4>
+        <p style="margin: 5px 0;"><strong>Card:</strong> 1234567890123456</p>
+        <p style="margin: 5px 0;"><strong>PIN:</strong> 1234</p>
+    </div>
+</div>
+
+<style>
+    #id_card_number, #id_pin {
+        padding-left: 35px !important;
+    }
+</style>
+{% endblock %}

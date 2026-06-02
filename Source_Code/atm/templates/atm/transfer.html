@@ -1,0 +1,104 @@
+{% extends 'atm/base.html' %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto;">
+    <h2><i class="fas fa-exchange-alt"></i> Fund Transfer</h2>
+    
+    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+        <p><strong>Your Account:</strong> {{ account.account_number }}</p>
+        <p><strong>Available Balance:</strong> ${{ account.current_balance }}</p>
+        <p><strong>Daily Transfer Limit:</strong> ${{ account.daily_transfer_limit }}</p>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="id_receiver_account">Receiver Account Number:</label>
+            <div style="position: relative;">
+                <i class="fas fa-user" style="position: absolute; left: 10px; top: 12px; color: #666;"></i>
+                {{ form.receiver_account }}
+            </div>
+            {% if form.receiver_account.errors %}
+                <div class="error" style="color: #e74c3c;">
+                    {{ form.receiver_account.errors }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="id_amount">Amount:</label>
+            <div style="position: relative;">
+                <i class="fas fa-dollar-sign" style="position: absolute; left: 10px; top: 12px; color: #666;"></i>
+                {{ form.amount }}
+            </div>
+            {% if form.amount.errors %}
+                <div class="error" style="color: #e74c3c;">
+                    {{ form.amount.errors }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="id_description">Description (Optional):</label>
+            {{ form.description }}
+        </div>
+        
+        <div style="display: flex; gap: 15px; margin-top: 30px;">
+            <button type="submit" class="btn-primary" style="flex: 2;">
+                <i class="fas fa-paper-plane"></i> Transfer Funds
+            </button>
+            <a href="{% url 'dashboard' %}" style="flex: 1; display: inline-block; padding: 12px; background: #95a5a6; color: white; text-align: center; text-decoration: none; border-radius: 5px;">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </div>
+    </form>
+    
+    <!-- Quick Amounts (Fixed without split filter) -->
+    <div style="margin-top: 30px;">
+        <h4><i class="fas fa-bolt"></i> Quick Amounts</h4>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
+            <button type="button" onclick="setAmount(500)" style="padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                $500
+            </button>
+            <button type="button" onclick="setAmount(1000)" style="padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                $1000
+            </button>
+            <button type="button" onclick="setAmount(5000)" style="padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                $5000
+            </button>
+            <button type="button" onclick="setAmount(10000)" style="padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                $10000
+            </button>
+            <button type="button" onclick="setAmount(20000)" style="padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                $20000
+            </button>
+        </div>
+    </div>
+    
+    <div style="margin-top: 40px; padding: 20px; background: #fff3cd; border-radius: 8px;">
+        <h4 style="color: #856404; margin-top: 0;">
+            <i class="fas fa-exclamation-triangle"></i> Important Security Notice
+        </h4>
+        <ul style="color: #856404;">
+            <li>Verify receiver account number before transferring</li>
+            <li>Double-check the amount</li>
+            <li>Transfers cannot be reversed automatically</li>
+            <li>Contact bank immediately for unauthorized transfers</li>
+            <li>Keep transaction reference number for records</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+function setAmount(amount) {
+    document.querySelector('input[name="amount"]').value = amount;
+}
+</script>
+
+<style>
+    #id_receiver_account, #id_amount {
+        padding-left: 35px !important;
+    }
+</style>
+{% endblock %}

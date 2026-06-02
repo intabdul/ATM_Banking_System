@@ -1,0 +1,90 @@
+{% extends 'atm/base.html' %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto;">
+    <h2><i class="fas fa-money-bill-wave"></i> Cash Withdrawal</h2>
+    
+    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+        <p><strong>Available Balance:</strong> ${{ account.current_balance }}</p>
+        <p><strong>Daily Withdrawal Limit:</strong> ${{ account.daily_withdrawal_limit }}</p>
+        <p><strong>ATM Cash Available:</strong> ${{ atm.cash_balance }}</p>
+    </div>
+    
+    {% if atm.cash_balance < 50000 %}
+    <div class="alert alert-warning">
+        <i class="fas fa-exclamation-triangle"></i>
+        ATM cash is low. Maximum withdrawal may be limited.
+    </div>
+    {% endif %}
+    
+    <form method="post" id="withdrawForm">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="id_amount">Amount to Withdraw:</label>
+            <div style="position: relative;">
+                <i class="fas fa-dollar-sign" style="position: absolute; left: 10px; top: 12px; color: #666;"></i>
+                {{ form.amount }}
+            </div>
+            {% if form.amount.errors %}
+                <div class="error" style="color: #e74c3c;">
+                    {{ form.amount.errors }}
+                </div>
+            {% endif %}
+            <small style="color: #7f8c8d; display: block; margin-top: 5px;">
+                <i class="fas fa-info-circle"></i> Enter amount in multiples of 100 (e.g., 100, 500, 1000)
+            </small>
+        </div>
+        
+        <div style="display: flex; gap: 15px; margin-top: 30px;">
+            <button type="submit" class="btn-primary" style="flex: 2;">
+                <i class="fas fa-check-circle"></i> Withdraw Cash
+            </button>
+            <a href="{% url 'dashboard' %}" style="flex: 1; display: inline-block; padding: 12px; background: #95a5a6; color: white; text-align: center; text-decoration: none; border-radius: 5px;">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </div>
+    </form>
+    
+    <div style="margin-top: 30px;">
+        <h4><i class="fas fa-bolt"></i> Quick Withdraw Options</h4>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
+            <button type="button" onclick="quickWithdraw(500)" style="padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                $500
+            </button>
+            <button type="button" onclick="quickWithdraw(1000)" style="padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                $1000
+            </button>
+            <button type="button" onclick="quickWithdraw(5000)" style="padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                $5000
+            </button>
+            <button type="button" onclick="quickWithdraw(10000)" style="padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                $10000
+            </button>
+            <button type="button" onclick="quickWithdraw(20000)" style="padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                $20000
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+function quickWithdraw(amount) {
+    // Set amount in form
+    document.querySelector('input[name="amount"]').value = amount;
+    
+    // Submit form
+    document.getElementById('withdrawForm').submit();
+}
+
+function setAmount(amount) {
+    document.querySelector('input[name="amount"]').value = amount;
+}
+</script>
+
+<style>
+    #id_amount {
+        padding-left: 35px !important;
+    }
+</style>
+{% endblock %}

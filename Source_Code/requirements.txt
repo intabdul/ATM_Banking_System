@@ -1,0 +1,6 @@
+Django==5.2.5
+django-crispy-forms==2.2
+crispy-bootstrap4==2024.1
+Pillow==10.3.0
+reportlab==4.1.0
+python-decouple==3.8
